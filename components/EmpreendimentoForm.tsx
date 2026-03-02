@@ -3,6 +3,7 @@
  * @module components/EmpreendimentoForm
  * @description Componente React que renderiza um formulário completo para cadastrar
  * ou editar empreendimentos, com validação de campos e feedback visual.
+ * O campo de município utiliza um select com todos os 295 municípios de Santa Catarina.
  */
 
 'use client'
@@ -10,6 +11,7 @@
 import { useState, useEffect } from 'react'
 import { Empreendimento, EmpreendimentoFormData, SEGMENTOS, STATUS_OPTIONS } from '@/types/empreendimento'
 import type { Segmento, Status } from '@/types/empreendimento'
+import { MUNICIPIOS_SC } from '@/types/municipios-sc'
 
 /**
  * Propriedades do componente EmpreendimentoForm
@@ -130,8 +132,7 @@ export default function EmpreendimentoForm({
         <label htmlFor="municipio" className="block text-sm font-medium text-gray-700 mb-1">
           Município de Santa Catarina *
         </label>
-        <input
-          type="text"
+        <select
           id="municipio"
           required
           value={formData.municipio}
@@ -139,7 +140,14 @@ export default function EmpreendimentoForm({
             setFormData({ ...formData, municipio: e.target.value })
           }
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        >
+          <option value="">Selecione um município</option>
+          {MUNICIPIOS_SC.map((municipio) => (
+            <option key={municipio} value={municipio}>
+              {municipio}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

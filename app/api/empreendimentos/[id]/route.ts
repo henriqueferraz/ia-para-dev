@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import type { Segmento, Status } from '@/types/empreendimento'
+import { MUNICIPIOS_SC } from '@/types/municipios-sc'
 
 /**
  * Handler GET para buscar um empreendimento específico por ID
@@ -123,6 +124,14 @@ export async function PUT(
     ) {
       return NextResponse.json(
         { error: 'Todos os campos obrigatórios devem ser preenchidos' },
+        { status: 400 }
+      )
+    }
+
+    // Validação do município
+    if (!MUNICIPIOS_SC.includes(municipio as any)) {
+      return NextResponse.json(
+        { error: 'Município inválido. Selecione um município válido de Santa Catarina.' },
         { status: 400 }
       )
     }
