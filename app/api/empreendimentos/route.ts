@@ -1,8 +1,41 @@
+/**
+ * @fileoverview Rotas da API para operações CRUD de empreendimentos
+ * @module app/api/empreendimentos/route
+ * @description Este módulo contém os handlers HTTP para listar e criar empreendimentos.
+ * Implementa os métodos GET (listar todos) e POST (criar novo).
+ */
+
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import type { Segmento, Status } from '@/types/empreendimento'
 
-// GET - Listar todos os empreendimentos
+/**
+ * Handler GET para listar todos os empreendimentos cadastrados
+ * 
+ * @description Retorna uma lista de todos os empreendimentos ordenados por data de criação (mais recentes primeiro).
+ * 
+ * @route GET /api/empreendimentos
+ * @returns {Promise<NextResponse>} Resposta JSON com array de empreendimentos ou erro
+ * 
+ * @example
+ * ```typescript
+ * // Requisição
+ * GET /api/empreendimentos
+ * 
+ * // Resposta de sucesso (200)
+ * [
+ *   {
+ *     id: "clx...",
+ *     nomeEmpreendimento: "Tech Startup",
+ *     nomeEmpreendedor: "João Silva",
+ *     // ...
+ *   }
+ * ]
+ * 
+ * // Resposta de erro (500)
+ * { error: "Erro ao buscar empreendimentos" }
+ * ```
+ */
 export async function GET() {
   try {
     const empreendimentos = await prisma.empreendimento.findMany({
@@ -19,7 +52,45 @@ export async function GET() {
   }
 }
 
-// POST - Criar novo empreendimento
+/**
+ * Handler POST para criar um novo empreendimento
+ * 
+ * @description Cria um novo empreendimento no banco de dados após validar todos os campos obrigatórios.
+ * Valida os campos obrigatórios, segmento e status antes de criar o registro.
+ * 
+ * @route POST /api/empreendimentos
+ * @param {NextRequest} request - Objeto de requisição contendo os dados do empreendimento no body
+ * @returns {Promise<NextResponse>} Resposta JSON com o empreendimento criado ou erro
+ * 
+ * @example
+ * ```typescript
+ * // Requisição
+ * POST /api/empreendimentos
+ * Content-Type: application/json
+ * 
+ * {
+ *   "nomeEmpreendimento": "Tech Startup",
+ *   "nomeEmpreendedor": "João Silva",
+ *   "municipio": "Florianópolis",
+ *   "segmento": "TECNOLOGIA",
+ *   "email": "contato@techstartup.com",
+ *   "status": "ATIVO"
+ * }
+ * 
+ * // Resposta de sucesso (201)
+ * {
+ *   id: "clx...",
+ *   nomeEmpreendimento: "Tech Startup",
+ *   // ...
+ * }
+ * 
+ * // Resposta de erro - campos obrigatórios (400)
+ * { error: "Todos os campos obrigatórios devem ser preenchidos" }
+ * 
+ * // Resposta de erro - segmento inválido (400)
+ * { error: "Segmento inválido" }
+ * ```
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

@@ -11,7 +11,7 @@ A solução foi desenvolvida utilizando Next.js com TypeScript, proporcionando u
 - **Next.js 16.1.6** - Framework React para desenvolvimento full-stack
 - **React 19.2.3** - Biblioteca JavaScript para construção de interfaces
 - **TypeScript 5** - Superset JavaScript com tipagem estática
-- **Prisma 7.4.2** - ORM moderno para gerenciamento de banco de dados
+- **Prisma 5.22.0** - ORM moderno para gerenciamento de banco de dados
 - **SQLite** - Banco de dados relacional leve e eficiente
 - **Tailwind CSS 4** - Framework CSS utilitário para estilização
 - **Node.js** - Ambiente de execução JavaScript
@@ -19,15 +19,13 @@ A solução foi desenvolvida utilizando Next.js com TypeScript, proporcionando u
 ## 📁 Estrutura do Projeto
 
 ```
-empreendimentos-sc/
+.
 ├── app/
 │   ├── api/
 │   │   └── empreendimentos/
 │   │       ├── route.ts              # Rotas GET e POST para listar e criar
 │   │       └── [id]/
 │   │           └── route.ts          # Rotas GET, PUT e DELETE para operações específicas
-│   ├── generated/
-│   │   └── prisma/                   # Cliente Prisma gerado automaticamente
 │   ├── layout.tsx                    # Layout principal da aplicação
 │   ├── page.tsx                      # Página principal com lógica CRUD
 │   └── globals.css                   # Estilos globais
@@ -39,12 +37,18 @@ empreendimentos-sc/
 │   └── prisma.ts                     # Configuração e instância do Prisma Client
 ├── prisma/
 │   ├── migrations/                   # Migrações do banco de dados
-│   └── schema.prisma                 # Schema do banco de dados
+│   ├── schema.prisma                 # Schema do banco de dados
+│   └── dev.db                        # Banco de dados SQLite
 ├── types/
 │   └── empreendimento.ts             # Tipos TypeScript para Empreendimento
+├── public/                           # Arquivos estáticos
 ├── .env                              # Variáveis de ambiente
+├── .env.example                      # Exemplo de variáveis de ambiente
+├── .gitignore                        # Arquivos ignorados pelo Git
 ├── package.json                      # Dependências do projeto
-├── prisma.config.ts                  # Configuração do Prisma
+├── tsconfig.json                     # Configuração do TypeScript
+├── next.config.ts                    # Configuração do Next.js
+├── eslint.config.mjs                 # Configuração do ESLint
 └── README.md                         # Documentação do projeto
 ```
 
@@ -82,7 +86,7 @@ empreendimentos-sc/
 
 1. **Clone o repositório** (ou navegue até a pasta do projeto):
    ```bash
-   cd empreendimentos-sc
+   # O projeto está na raiz do repositório
    ```
 
 2. **Instale as dependências**:
@@ -131,11 +135,11 @@ A aplicação expõe os seguintes endpoints REST:
 
 ## 🎨 Interface
 
-A interface foi desenvolvida com foco em usabilidade e design moderno, utilizando Tailwind CSS para estilização responsiva. A aplicação é totalmente funcional em dispositivos desktop, tablet e mobile.
+A interface foi desenvolvida com foco em usabilidade e design moderno, utilizando Tailwind CSS para estilização responsiva. A aplicação é totalmente funcional em dispositivos desktop, tablet e mobile. A interface apresenta um design limpo e intuitivo, com formulários bem estruturados, cards informativos para cada empreendimento e feedback visual claro para todas as ações do usuário. A experiência do usuário foi priorizada, garantindo que todas as operações sejam simples e diretas.
 
 ## 📊 Banco de Dados
 
-O banco de dados SQLite é criado automaticamente na primeira execução das migrações. O arquivo `dev.db` será gerado na pasta `prisma/`. Para visualizar os dados de forma visual, você pode usar o Prisma Studio:
+O banco de dados SQLite é criado automaticamente na primeira execução das migrações. O arquivo `dev.db` será gerado na pasta `prisma/`. O banco de dados utiliza o Prisma ORM para gerenciamento de dados, garantindo type-safety e facilitando as operações CRUD. Para visualizar os dados de forma visual, você pode usar o Prisma Studio:
 
 ```bash
 npx prisma studio

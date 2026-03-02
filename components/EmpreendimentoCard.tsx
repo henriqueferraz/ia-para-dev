@@ -1,14 +1,48 @@
+/**
+ * @fileoverview Componente de card para exibição de empreendimento
+ * @module components/EmpreendimentoCard
+ * @description Componente React que renderiza um card visual com as informações
+ * de um empreendimento, incluindo ações de edição e exclusão.
+ */
+
 'use client'
 
 import { Empreendimento } from '@/types/empreendimento'
 import { SEGMENTOS, STATUS_OPTIONS } from '@/types/empreendimento'
 
+/**
+ * Propriedades do componente EmpreendimentoCard
+ * 
+ * @interface EmpreendimentoCardProps
+ * @property {Empreendimento} empreendimento - Dados do empreendimento a ser exibido
+ * @property {(empreendimento: Empreendimento) => void} onEdit - Callback executado ao clicar em editar
+ * @property {(id: string) => void} onDelete - Callback executado ao clicar em excluir
+ */
 interface EmpreendimentoCardProps {
   empreendimento: Empreendimento
   onEdit: (empreendimento: Empreendimento) => void
   onDelete: (id: string) => void
 }
 
+/**
+ * Componente de card para exibição de empreendimento
+ * 
+ * @description Renderiza um card visual com todas as informações do empreendimento,
+ * incluindo nome, empreendedor, município, segmento, contato e status. Possui botões
+ * para edição e exclusão com confirmação.
+ * 
+ * @param {EmpreendimentoCardProps} props - Propriedades do componente
+ * @returns {JSX.Element} Card HTML com informações do empreendimento
+ * 
+ * @example
+ * ```tsx
+ * <EmpreendimentoCard
+ *   empreendimento={empreendimento}
+ *   onEdit={handleEdit}
+ *   onDelete={handleDelete}
+ * />
+ * ```
+ */
 export default function EmpreendimentoCard({
   empreendimento,
   onEdit,

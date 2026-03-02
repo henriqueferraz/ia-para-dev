@@ -1,15 +1,49 @@
+/**
+ * @fileoverview Componente de formulário para criação e edição de empreendimentos
+ * @module components/EmpreendimentoForm
+ * @description Componente React que renderiza um formulário completo para cadastrar
+ * ou editar empreendimentos, com validação de campos e feedback visual.
+ */
+
 'use client'
 
 import { useState, useEffect } from 'react'
 import { Empreendimento, EmpreendimentoFormData, SEGMENTOS, STATUS_OPTIONS } from '@/types/empreendimento'
 import type { Segmento, Status } from '@/types/empreendimento'
 
+/**
+ * Propriedades do componente EmpreendimentoForm
+ * 
+ * @interface EmpreendimentoFormProps
+ * @property {Empreendimento} [empreendimento] - Dados do empreendimento para edição (opcional)
+ * @property {(data: EmpreendimentoFormData) => Promise<void>} onSubmit - Callback executado ao submeter o formulário
+ * @property {() => void} [onCancel] - Callback executado ao cancelar a edição (opcional)
+ */
 interface EmpreendimentoFormProps {
   empreendimento?: Empreendimento
   onSubmit: (data: EmpreendimentoFormData) => Promise<void>
   onCancel?: () => void
 }
 
+/**
+ * Componente de formulário para criação e edição de empreendimentos
+ * 
+ * @description Renderiza um formulário completo com todos os campos necessários para
+ * cadastrar ou editar um empreendimento. Gerencia o estado do formulário, validação
+ * e submissão dos dados.
+ * 
+ * @param {EmpreendimentoFormProps} props - Propriedades do componente
+ * @returns {JSX.Element} Formulário HTML com campos de entrada
+ * 
+ * @example
+ * ```tsx
+ * <EmpreendimentoForm
+ *   empreendimento={empreendimentoExistente}
+ *   onSubmit={handleSubmit}
+ *   onCancel={handleCancel}
+ * />
+ * ```
+ */
 export default function EmpreendimentoForm({
   empreendimento,
   onSubmit,
@@ -23,8 +57,18 @@ export default function EmpreendimentoForm({
     email: empreendimento?.email || '',
     status: empreendimento?.status || ('ATIVO' as Status),
   })
+  /** Estado que controla se o formulário está sendo submetido */
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  /**
+   * Handler para submissão do formulário
+   * 
+   * @description Previne o comportamento padrão do formulário, valida os dados,
+   * chama a função onSubmit e reseta o formulário se for uma criação.
+   * 
+   * @param {React.FormEvent} e - Evento de submissão do formulário
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)

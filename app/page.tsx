@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Página principal da aplicação de gerenciamento de empreendimentos
+ * @module app/page
+ * @description Componente principal que gerencia o estado da aplicação e coordena
+ * todas as operações CRUD através de chamadas à API.
+ */
+
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -5,6 +12,20 @@ import { Empreendimento, EmpreendimentoFormData } from '@/types/empreendimento'
 import EmpreendimentoForm from '@/components/EmpreendimentoForm'
 import EmpreendimentoList from '@/components/EmpreendimentoList'
 
+/**
+ * Componente da página principal (Home)
+ * 
+ * @description Gerencia todo o estado da aplicação, incluindo a lista de empreendimentos,
+ * controle de exibição do formulário, estado de carregamento e operações CRUD.
+ * Coordena a comunicação entre os componentes e a API.
+ * 
+ * @returns {JSX.Element} Página principal com header, formulário e lista de empreendimentos
+ * 
+ * @example
+ * ```tsx
+ * // Este componente é renderizado automaticamente pelo Next.js na rota "/"
+ * ```
+ */
 export default function Home() {
   const [empreendimentos, setEmpreendimentos] = useState<Empreendimento[]>([])
   const [loading, setLoading] = useState(true)
@@ -12,7 +33,15 @@ export default function Home() {
   const [editingEmpreendimento, setEditingEmpreendimento] =
     useState<Empreendimento | null>(null)
 
-  // Carregar empreendimentos
+  /**
+   * Carrega todos os empreendimentos da API
+   * 
+   * @description Faz uma requisição GET para a API e atualiza o estado local
+   * com os empreendimentos retornados. Gerencia o estado de carregamento.
+   * 
+   * @returns {Promise<void>}
+   * @private
+   */
   const fetchEmpreendimentos = async () => {
     try {
       const response = await fetch('/api/empreendimentos')
@@ -31,7 +60,15 @@ export default function Home() {
     fetchEmpreendimentos()
   }, [])
 
-  // Criar novo empreendimento
+  /**
+   * Cria um novo empreendimento
+   * 
+   * @description Envia uma requisição POST para a API com os dados do novo empreendimento.
+   * Após sucesso, recarrega a lista e oculta o formulário.
+   * 
+   * @param {EmpreendimentoFormData} data - Dados do empreendimento a ser criado
+   * @returns {Promise<void>}
+   */
   const handleCreate = async (data: EmpreendimentoFormData) => {
     try {
       const response = await fetch('/api/empreendimentos', {
@@ -56,7 +93,15 @@ export default function Home() {
     }
   }
 
-  // Atualizar empreendimento
+  /**
+   * Atualiza um empreendimento existente
+   * 
+   * @description Envia uma requisição PUT para a API com os dados atualizados.
+   * Após sucesso, recarrega a lista e limpa o estado de edição.
+   * 
+   * @param {EmpreendimentoFormData} data - Dados atualizados do empreendimento
+   * @returns {Promise<void>}
+   */
   const handleUpdate = async (data: EmpreendimentoFormData) => {
     if (!editingEmpreendimento) return
 
@@ -87,7 +132,14 @@ export default function Home() {
     }
   }
 
-  // Deletar empreendimento
+  /**
+   * Remove um empreendimento
+   * 
+   * @description Envia uma requisição DELETE para a API. Após sucesso, recarrega a lista.
+   * 
+   * @param {string} id - ID do empreendimento a ser removido
+   * @returns {Promise<void>}
+   */
   const handleDelete = async (id: string) => {
     try {
       const response = await fetch(`/api/empreendimentos/${id}`, {
@@ -107,12 +159,26 @@ export default function Home() {
     }
   }
 
-  // Editar empreendimento
+  /**
+   * Inicia o modo de edição de um empreendimento
+   * 
+   * @description Define o empreendimento a ser editado e exibe o formulário.
+   * 
+   * @param {Empreendimento} empreendimento - Empreendimento a ser editado
+   */
   const handleEdit = (empreendimento: Empreendimento) => {
     setEditingEmpreendimento(empreendimento)
     setShowForm(true)
   }
 
+  /**
+   * Handler unificado para submissão do formulário
+   * 
+   * @description Decide se deve criar ou atualizar baseado no estado de edição.
+   * 
+   * @param {EmpreendimentoFormData} data - Dados do formulário
+   * @returns {Promise<void>}
+   */
   const handleFormSubmit = async (data: EmpreendimentoFormData) => {
     if (editingEmpreendimento) {
       await handleUpdate(data)
@@ -121,6 +187,11 @@ export default function Home() {
     }
   }
 
+  /**
+   * Cancela a edição e oculta o formulário
+   * 
+   * @description Limpa o estado de edição e oculta o formulário.
+   */
   const handleCancel = () => {
     setShowForm(false)
     setEditingEmpreendimento(null)

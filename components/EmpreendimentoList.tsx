@@ -1,14 +1,48 @@
+/**
+ * @fileoverview Componente de listagem de empreendimentos
+ * @module components/EmpreendimentoList
+ * @description Componente React que renderiza uma grade responsiva de cards de empreendimentos.
+ * Exibe uma mensagem quando não há empreendimentos cadastrados.
+ */
+
 'use client'
 
 import { Empreendimento } from '@/types/empreendimento'
 import EmpreendimentoCard from './EmpreendimentoCard'
 
+/**
+ * Propriedades do componente EmpreendimentoList
+ * 
+ * @interface EmpreendimentoListProps
+ * @property {Empreendimento[]} empreendimentos - Array de empreendimentos a serem exibidos
+ * @property {(empreendimento: Empreendimento) => void} onEdit - Callback executado ao editar um empreendimento
+ * @property {(id: string) => void} onDelete - Callback executado ao deletar um empreendimento
+ */
 interface EmpreendimentoListProps {
   empreendimentos: Empreendimento[]
   onEdit: (empreendimento: Empreendimento) => void
   onDelete: (id: string) => void
 }
 
+/**
+ * Componente de listagem de empreendimentos
+ * 
+ * @description Renderiza uma grade responsiva de cards de empreendimentos usando CSS Grid.
+ * Adapta-se a diferentes tamanhos de tela (1 coluna em mobile, 2 em tablet, 3 em desktop).
+ * Exibe uma mensagem amigável quando não há empreendimentos cadastrados.
+ * 
+ * @param {EmpreendimentoListProps} props - Propriedades do componente
+ * @returns {JSX.Element} Grade de cards ou mensagem de lista vazia
+ * 
+ * @example
+ * ```tsx
+ * <EmpreendimentoList
+ *   empreendimentos={empreendimentos}
+ *   onEdit={handleEdit}
+ *   onDelete={handleDelete}
+ * />
+ * ```
+ */
 export default function EmpreendimentoList({
   empreendimentos,
   onEdit,
