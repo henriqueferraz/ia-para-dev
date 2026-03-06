@@ -28,7 +28,8 @@ export type Status = 'ATIVO' | 'INATIVO'
  * @property {string} nomeEmpreendedor - Nome do responsável pelo empreendimento
  * @property {string} municipio - Município de Santa Catarina onde está localizado
  * @property {Segmento} segmento - Segmento de atuação do empreendimento
- * @property {string} email - E-mail ou meio de contato
+ * @property {string} email - E-mail de contato (obrigatório)
+ * @property {string} [telefone] - Telefone de contato no formato (XX) XXXXX-XXXX (opcional)
  * @property {Status} status - Status atual do empreendimento (ativo ou inativo)
  * @property {string} createdAt - Data e hora de criação (ISO 8601)
  * @property {string} updatedAt - Data e hora da última atualização (ISO 8601)
@@ -40,6 +41,7 @@ export interface Empreendimento {
   municipio: string
   segmento: Segmento
   email: string
+  telefone?: string | null
   status: Status
   createdAt: string
   updatedAt: string
@@ -53,7 +55,8 @@ export interface Empreendimento {
  * @property {string} nomeEmpreendedor - Nome do responsável (obrigatório)
  * @property {string} municipio - Município de Santa Catarina (obrigatório)
  * @property {Segmento} segmento - Segmento de atuação (obrigatório)
- * @property {string} email - E-mail ou meio de contato (obrigatório)
+ * @property {string} email - E-mail de contato (obrigatório, validado)
+ * @property {string} [telefone] - Telefone de contato no formato (XX) XXXXX-XXXX (opcional, validado)
  * @property {Status} status - Status do empreendimento
  */
 export interface EmpreendimentoFormData {
@@ -62,6 +65,7 @@ export interface EmpreendimentoFormData {
   municipio: string
   segmento: Segmento
   email: string
+  telefone?: string
   status: Status
 }
 

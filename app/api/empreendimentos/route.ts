@@ -101,6 +101,7 @@ export async function POST(request: NextRequest) {
       municipio,
       segmento,
       email,
+      telefone,
       status,
     } = body
 
@@ -135,6 +136,28 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validação do email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'E-mail inválido' },
+        { status: 400 }
+      )
+    }
+
+    // Validação do telefone (se fornecido)
+    let telefoneValidado = null
+    if (telefone && telefone.trim()) {
+      const telefoneNumbers = telefone.replace(/\D/g, '')
+      if (telefoneNumbers.length < 10 || telefoneNumbers.length > 11) {
+        return NextResponse.json(
+          { error: 'Telefone inválido. Use o formato (XX) XXXXX-XXXX' },
+          { status: 400 }
+        )
+      }
+      telefoneValidado = telefone.trim()
+    }
+
     // Validação do enum Status
     const statusValidos: Status[] = ['ATIVO', 'INATIVO']
     const statusFinal = status && statusValidos.includes(status) 
@@ -148,6 +171,7 @@ export async function POST(request: NextRequest) {
         municipio,
         segmento,
         email,
+        telefone: telefoneValidado,
         status: statusFinal,
       },
     })

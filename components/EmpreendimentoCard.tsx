@@ -88,14 +88,27 @@ export default function EmpreendimentoCard({
           <span className="font-medium mr-2">Segmento:</span>
           {segmentoLabel}
         </div>
-        <div className="flex items-center text-sm text-gray-600">
-          <span className="font-medium mr-2">Contato:</span>
-          <a
-            href={`mailto:${empreendimento.email}`}
-            className="text-blue-600 hover:underline"
-          >
-            {empreendimento.email}
-          </a>
+        <div className="space-y-1">
+          <div className="flex items-center text-sm text-gray-600">
+            <span className="font-medium mr-2">E-mail:</span>
+            <a
+              href={`mailto:${empreendimento.email}`}
+              className="text-blue-600 hover:underline"
+            >
+              {empreendimento.email}
+            </a>
+          </div>
+          {empreendimento.telefone && (
+            <div className="flex items-center text-sm text-gray-600">
+              <span className="font-medium mr-2">Telefone:</span>
+              <a
+                href={`tel:${empreendimento.telefone.replace(/\D/g, '')}`}
+                className="text-blue-600 hover:underline"
+              >
+                {empreendimento.telefone}
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

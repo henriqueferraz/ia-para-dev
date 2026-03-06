@@ -1,23 +1,48 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+/// Gerador do Prisma Client
 generator client {
   provider = "prisma-client-js"
 }
 
+/// Configuração da fonte de dados SQLite
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
+/// Modelo de Empreendimento
+/// Representa um empreendimento cadastrado no sistema de gerenciamento
+/// de empreendimentos de Santa Catarina
 model Empreendimento {
-  id                    String   @id @default(cuid())
-  nomeEmpreendimento    String
-  nomeEmpreendedor      String
-  municipio            String
-  segmento             String
-  email                String
-  status               String   @default("ATIVO")
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  /// Identificador único do empreendimento (CUID)
+  id String @id @default(cuid())
+
+  /// Nome do empreendimento
+  nomeEmpreendimento String
+
+  /// Nome do responsável pelo empreendimento
+  nomeEmpreendedor String
+
+  /// Município de Santa Catarina onde está localizado
+  municipio String
+
+  /// Segmento de atuação (TECNOLOGIA, COMERCIO, INDUSTRIA, SERVICOS, AGRONEGOCIO)
+  segmento String
+
+  /// E-mail de contato (obrigatório, validado)
+  email String
+
+  /// Telefone de contato no formato (XX) XXXXX-XXXX (opcional)
+  telefone String?
+
+  /// Status do empreendimento (ATIVO ou INATIVO)
+  status String @default("ATIVO")
+
+  /// Data e hora de criação do registro
+  createdAt DateTime @default(now())
+
+  /// Data e hora da última atualização do registro
+  updatedAt DateTime @updatedAt
 }

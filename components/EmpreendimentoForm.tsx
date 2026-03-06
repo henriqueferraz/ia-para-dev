@@ -52,15 +52,92 @@ export default function EmpreendimentoForm({
   onCancel,
 }: EmpreendimentoFormProps) {
   const [formData, setFormData] = useState<EmpreendimentoFormData>({
-    nomeEmpreendimento: empreendimento?.nomeEmpreendimento || '',
-    nomeEmpreendedor: empreendimento?.nomeEmpreendedor || '',
-    municipio: empreendimento?.municipio || '',
-    segmento: empreendimento?.segmento || ('TECNOLOGIA' as Segmento),
-    email: empreendimento?.email || '',
-    status: empreendimento?.status || ('ATIVO' as Status),
+    nomeEmpreendimento: '',
+    nomeEmpreendedor: '',
+    municipio: '',
+    segmento: 'TECNOLOGIA' as Segmento,
+    email: '',
+    telefone: '',
+    status: 'ATIVO' as Status,
   })
   /** Estado que controla se o formulário está sendo submetido */
   const [isSubmitting, setIsSubmitting] = useState(false)
+  /** Estado para erros de validação */
+  const [errors, setErrors] = useState<{ email?: string; telefone?: string }>({})
+
+  // Sincroniza o estado do formulário quando o empreendimento mudar
+  useEffect(() => {
+    if (empreendimento) {
+      setFormData({
+        nomeEmpreendimento: empreendimento.nomeEmpreendimento || '',
+        nomeEmpreendedor: empreendimento.nomeEmpreendedor || '',
+        municipio: empreendimento.municipio || '',
+        segmento: empreendimento.segmento || ('TECNOLOGIA' as Segmento),
+        email: empreendimento.email || '',
+        telefone: empreendimento.telefone || '',
+        status: empreendimento.status || ('ATIVO' as Status),
+      })
+    } else {
+      // Reset form quando não há empreendimento (modo criação)
+      setFormData({
+        nomeEmpreendimento: '',
+        nomeEmpreendedor: '',
+        municipio: '',
+        segmento: 'TECNOLOGIA' as Segmento,
+        email: '',
+        telefone: '',
+        status: 'ATIVO' as Status,
+      })
+    }
+    setErrors({})
+  }, [empreendimento])
+
+  /**
+   * Aplica máscara de telefone no formato (XX) XXXXX-XXXX
+   * 
+   * @param {string} value - Valor do telefone sem formatação
+   * @returns {string} Telefone formatado
+   */
+  const formatPhone = (value: string): string => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '')
+
+    // Limita a 11 dígitos (DDD + 9 dígitos)
+    const limitedNumbers = numbers.slice(0, 11)
+
+    // Aplica a máscara
+    if (limitedNumbers.length <= 2) {
+      return limitedNumbers ? `(${limitedNumbers}` : ''
+    } else if (limitedNumbers.length <= 7) {
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2)}`
+    } else {
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2, 7)}-${limitedNumbers.slice(7, 11)}`
+    }
+  }
+
+  /**
+   * Valida formato de email
+   * 
+   * @param {string} email - Email a ser validado
+   * @returns {boolean} True se válido
+   */
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  /**
+   * Valida formato de telefone
+   * 
+   * @param {string} telefone - Telefone a ser validado (com ou sem máscara)
+   * @returns {boolean} True se válido
+   */
+  const validatePhone = (telefone: string): boolean => {
+    if (!telefone) return true // Telefone é opcional
+    const numbers = telefone.replace(/\D/g, '')
+    // DDD (2 dígitos) + número (9 ou 10 dígitos para celular)
+    return numbers.length >= 10 && numbers.length <= 11
+  }
 
   /**
    * Handler para submissão do formulário
@@ -73,7 +150,26 @@ export default function EmpreendimentoForm({
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validações
+    const newErrors: { email?: string; telefone?: string } = {}
+
+    if (!validateEmail(formData.email)) {
+      newErrors.email = 'E-mail inválido'
+    }
+
+    if (formData.telefone && !validatePhone(formData.telefone)) {
+      newErrors.telefone = 'Telefone inválido. Use o formato (XX) XXXXX-XXXX'
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+
+    setErrors({})
     setIsSubmitting(true)
+
     try {
       await onSubmit(formData)
       if (!empreendimento) {
@@ -84,8 +180,10 @@ export default function EmpreendimentoForm({
           municipio: '',
           segmento: 'TECNOLOGIA' as Segmento,
           email: '',
+          telefone: '',
           status: 'ATIVO' as Status,
         })
+        setErrors({})
       }
     } catch (error) {
       console.error('Erro ao salvar:', error)
@@ -173,18 +271,68 @@ export default function EmpreendimentoForm({
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-          E-mail ou Meio de Contato *
+          E-mail *
         </label>
         <input
           type="email"
           id="email"
           required
           value={formData.email}
-          onChange={(e) =>
+          onChange={(e) => {
             setFormData({ ...formData, email: e.target.value })
-          }
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            if (errors.email) {
+              setErrors({ ...errors, email: undefined })
+            }
+          }}
+          onBlur={(e) => {
+            if (e.target.value && !validateEmail(e.target.value)) {
+              setErrors({ ...errors, email: 'E-mail inválido' })
+            }
+          }}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${errors.email
+              ? 'border-red-500 focus:ring-red-500'
+              : 'border-gray-300 focus:ring-blue-500'
+            }`}
+          placeholder="exemplo@email.com"
         />
+        {errors.email && (
+          <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-1">
+          Telefone (opcional)
+        </label>
+        <input
+          type="tel"
+          id="telefone"
+          value={formData.telefone || ''}
+          onChange={(e) => {
+            const formatted = formatPhone(e.target.value)
+            setFormData({ ...formData, telefone: formatted })
+            if (errors.telefone) {
+              setErrors({ ...errors, telefone: undefined })
+            }
+          }}
+          onBlur={(e) => {
+            if (e.target.value && !validatePhone(e.target.value)) {
+              setErrors({ ...errors, telefone: 'Telefone inválido. Use o formato (XX) XXXXX-XXXX' })
+            }
+          }}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${errors.telefone
+              ? 'border-red-500 focus:ring-red-500'
+              : 'border-gray-300 focus:ring-blue-500'
+            }`}
+          placeholder="(XX) XXXXX-XXXX"
+          maxLength={15}
+        />
+        {errors.telefone && (
+          <p className="mt-1 text-sm text-red-600">{errors.telefone}</p>
+        )}
+        <p className="mt-1 text-xs text-gray-500">
+          Formato: (DDD) XXXXX-XXXX
+        </p>
       </div>
 
       <div>
