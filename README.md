@@ -159,7 +159,9 @@ Este projeto foi desenvolvido como parte do processo seletivo para a trilha IA p
 ## 👤 Autor
 
 Desenvolvido como desafio prático para avaliação técnica no processo seletivo.
-
+Autor: Carlos Henrique Ferraz Cabral
+CPF.:988.639.327-00
+E-mail: henriqueferraz@ofnet.com.br
 ---
 
 **Nota**: Este sistema foi desenvolvido seguindo as especificações do desafio prático, implementando todas as funcionalidades obrigatórias de forma funcional e bem estruturada.
